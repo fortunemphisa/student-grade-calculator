@@ -135,8 +135,9 @@ public class GradeCalculatorTest {
     // (between the buggy threshold of 45 and correct threshold of 40)
     @Test
     public void testExamAdmission_Between40And45() {
-        // YOUR CODE HERE
-        fail("TODO: Implement this test");
+        // A semester mark of 42 is >= 40, so the student SHOULD be admitted.
+        // BUG #3 uses >= 45, so this returns false incorrectly.
+        assertTrue("Semester mark of 42 should qualify for exam admission", calculator.hasExamAdmission(42));
     }
 
     // =====================================================================
@@ -165,9 +166,11 @@ public class GradeCalculatorTest {
     // TODO: Write a test for class average with 5 students
     @Test
     public void testClassAverage_FiveStudents() {
-        // YOUR CODE HERE — use marks: 45, 55, 65, 75, 85
-        // Expected average: 65.0
-        fail("TODO: Implement this test");
+        // Marks: 45, 55, 65, 75, 85
+        // Expected average: (45+55+65+75+85)/5 = 325/5 = 65.0
+        // BUG #4 divides by (length+1)=6, producing 54.17 instead.
+        double[] marks = {45, 55, 65, 75, 85};
+        assertEquals(65.0, calculator.calculateClassAverage(marks), 0.01);
     }
 
     // =====================================================================
@@ -193,8 +196,10 @@ public class GradeCalculatorTest {
     // TODO: Write a test for pass rate where no students pass
     @Test
     public void testPassRate_NonePass() {
-        // YOUR CODE HERE
-        fail("TODO: Implement this test");
+        // All marks below 50 — pass rate should be 0.0
+        // BUG #5 uses >= 55 as threshold, so marks of 50-54 are wrongly excluded too.
+        double[] marks = {10, 20, 30, 40, 49};
+        assertEquals(0.0, calculator.calculatePassRate(marks), 0.01);
     }
 
     // =====================================================================
@@ -216,8 +221,10 @@ public class GradeCalculatorTest {
     // TODO: Write a test where highest mark is at the beginning of the array
     @Test
     public void testHighestMark_FirstElement() {
-        // YOUR CODE HERE
-        fail("TODO: Implement this test");
+        // Highest mark is the first element — BUG #6 uses < instead of >,
+        // so it finds the LOWEST mark (45) instead of the highest (95).
+        double[] marks = {95, 60, 72, 45, 83};
+        assertEquals(95.0, calculator.findHighestMark(marks), 0.01);
     }
 
     // =====================================================================
@@ -283,7 +290,8 @@ public class GradeCalculatorTest {
     // TODO: Write a test for mark value of 105 (should be invalid)
     @Test
     public void testValidMark_WayOver100() {
-        // YOUR CODE HERE
-        fail("TODO: Implement this test");
+        // 105 is outside the valid range of 0-100.
+        // BUG #8 uses -10 to 110 as the valid range, so 105 wrongly returns true.
+        assertFalse("105 is not a valid mark", calculator.isValidMark(105));
     }
 }
